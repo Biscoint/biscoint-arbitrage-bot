@@ -1,0 +1,12 @@
+{
+  "name": "biscoint-arbitrage-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/Biscoint/biscoint-arbitrage-bot.git",
+  "author": "Toledo <gustavo@obex.pw>",
+  "license": "MIT",
+  "dependencies": {
+    "biscoint-api-node": "^1.0.11",
+    "esm": "^3.2.25"
+  }
+}
