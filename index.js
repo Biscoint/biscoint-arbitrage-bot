@@ -1,16 +1,19 @@
 import Biscoint from "biscoint-api-node";
 
+function percent(value1, value2) {
+  return Number(value2) / Number(value1) - 1;
+}
 const bc = new Biscoint({
-  apiKey: "qwerty",
-  apiSecret: "qwerty",
+  apiKey: "c59989c1318c3d93140ceddc596d3fe04c5d24e67d30e31b443c778321ba0b8c",
+  apiSecret: "57a45ee483891e19f63d468d00b688fa476978ca3160dcdf3ee49f7cb19b3f0d",
   apiUrl: "http://localhost:3000"
 });
 
 const parameters = {
-  amount: 50,
+  amount: 500,
   base: "BRL",
   initialBuy: true,
-  minProfitPercent: 0.1,
+  minProfitPercent: 0.01,
   retry: 1
 };
 
@@ -22,20 +25,15 @@ setInterval(async () => {
       op: "buy"
     });
 
-    const sellOffer = retry(
-      bc.offer,
-      {
-        amount: parameters.amount,
-        base: parameters.base,
-        op: "sell"
-      },
-      parameters.retry
-    );
-    const profit = percent(buyOffer.quoteamount, sellOffer.quoteamount);
-    if (
-      profit >
-      parameters.minProfitPercent
-    ) {
+    const sellOffer = await bc.offer({
+      amount: parameters.amount,
+      base: parameters.base,
+      op: "sell"
+    });
+
+    const profit = percent(buyOffer.efPrice, sellOffer.efPrice);
+    console.log(profit);
+    if (profit > parameters.minProfitPercent) {
       try {
         if (parameters.initialBuy) {
           const confirmedBuy = await bc.confirmOffer({
@@ -45,7 +43,6 @@ setInterval(async () => {
           const confirmedSell = await bc.confirmOffer({
             offerId: sellOffer.offerId
           });
-
         } else {
           const confirmedSell = await bc.confirmOffer({
             offerId: sellOffer.offerId
@@ -55,7 +52,7 @@ setInterval(async () => {
           });
         }
 
-        console.log(`Success, profit: + ${profit}`);
+        console.log(`Success, profit: + ${profit.toFixed(2)}%`);
       } catch (error) {
         console.log("Error on confirm offer");
         console.log(error);
@@ -66,23 +63,6 @@ setInterval(async () => {
     console.error(error);
   }
 }, 5 * 1000);
-
-function percent(value1, value2) {
-  return (percent = Number(value2) / Number(value1) - 1);
-}
-
-function retry(cb, config, tryes) {
-  return new Promise(async (resolve, reject) => {
-    for (let i = 0; i <= tryes; i++) {
-      try {
-        resolve(cb(config));
-      } catch (error) {
-        if (i >= tryes) reject(error);
-        await sleep(500);
-      }
-    }
-  });
-}
 
 async function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve(), ms));
