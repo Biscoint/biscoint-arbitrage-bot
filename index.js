@@ -1,21 +1,23 @@
 import Biscoint from "biscoint-api-node";
+import config from "./config.js";
 
 function percent(value1, value2) {
   return Number(value2) / Number(value1) - 1;
 }
 const bc = new Biscoint({
-  apiKey: "c59989c1318c3d93140ceddc596d3fe04c5d24e67d30e31b443c778321ba0b8c",
-  apiSecret: "57a45ee483891e19f63d468d00b688fa476978ca3160dcdf3ee49f7cb19b3f0d",
-  apiUrl: "http://localhost:3000"
+  apiKey: config.apiKey,
+  apiSecret: config.apiSecret,
+  apiUrl: "http://localhost:4000"
 });
 
 const parameters = {
-  amount: 500,
-  base: "BRL",
-  initialBuy: true,
-  minProfitPercent: 0.01,
-  retry: 1
+  amount: config.amount,
+  base: config.base,
+  initialBuy: config.initialBuy,
+  minProfitPercent: config.minProfitPercent
 };
+
+let lastTrade = 0;
 
 setInterval(async () => {
   try {
@@ -25,6 +27,8 @@ setInterval(async () => {
       op: "buy"
     });
 
+    await sleep(200);
+
     const sellOffer = await bc.offer({
       amount: parameters.amount,
       base: parameters.base,
@@ -32,13 +36,17 @@ setInterval(async () => {
     });
 
     const profit = percent(buyOffer.efPrice, sellOffer.efPrice);
-    console.log(profit);
-    if (profit > parameters.minProfitPercent) {
+    if (
+      profit > parameters.minProfitPercent &&
+      Date.now() - 15 * 1000 >= lastTrade
+    ) {
       try {
         if (parameters.initialBuy) {
           const confirmedBuy = await bc.confirmOffer({
             offerId: buyOffer.offerId
           });
+
+          await sleep(500);
 
           const confirmedSell = await bc.confirmOffer({
             offerId: sellOffer.offerId
@@ -47,23 +55,30 @@ setInterval(async () => {
           const confirmedSell = await bc.confirmOffer({
             offerId: sellOffer.offerId
           });
+
+          await sleep(500);
+
           const confirmedBuy = await bc.confirmOffer({
             offerId: buyOffer.offerId
           });
         }
-
-        console.log(`Success, profit: + ${profit.toFixed(2)}%`);
+        lastTrade = Date.now();
+        handleMessage(`Success, profit: + ${profit.toFixed(2)}%`);
       } catch (error) {
-        console.log("Error on confirm offer");
+        handleMessage("Error on confirm offer", "error");
         console.log(error);
       }
     }
   } catch (error) {
-    console.log("Error on get offer");
+    handleMessage("Error on get offer", "error");
     console.error(error);
   }
 }, 5 * 1000);
 
 async function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve(), ms));
+}
+
+function handleMessage(message, level = "info") {
+  console.log(`[Biscoint BOT] [${level}] - ${message}`);
 }
