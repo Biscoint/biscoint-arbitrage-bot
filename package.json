@@ -6,7 +6,7 @@
   "author": "Toledo <gustavo@obex.pw>",
   "license": "MIT",
   "dependencies": {
-    "biscoint-api-node": "^1.0.11",
+    "biscoint-api-node": "^1.0.52",
     "esm": "^3.2.25"
   },
   "scripts": {
