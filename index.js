@@ -6,8 +6,7 @@ function percent(value1, value2) {
 }
 const bc = new Biscoint({
   apiKey: config.apiKey,
-  apiSecret: config.apiSecret,
-  apiUrl: "http://localhost:4000"
+  apiSecret: config.apiSecret
 });
 
 const parameters = {
@@ -23,7 +22,7 @@ setInterval(async () => {
   try {
     const buyOffer = await bc.offer({
       amount: parameters.amount,
-      base: parameters.base,
+      isQuote: parameters.profitCurrency === "BTC",
       op: "buy"
     });
 
@@ -31,11 +30,12 @@ setInterval(async () => {
 
     const sellOffer = await bc.offer({
       amount: parameters.amount,
-      base: parameters.base,
+      isQuote: parameters.profitCurrency === "BTC",
       op: "sell"
     });
 
     const profit = percent(buyOffer.efPrice, sellOffer.efPrice);
+    handleMessage(`Calculated profit: ${profit.toFixed(2)}%`);
     if (
       profit > parameters.minProfitPercent &&
       Date.now() - 15 * 1000 >= lastTrade
