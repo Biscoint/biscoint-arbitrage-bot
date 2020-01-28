@@ -12,7 +12,24 @@ Tendo em vista a facilidade em se conectar a várias corretoras e junto com a AP
 
 É importante ressaltar que este código não deve ser usado com valores altos devido ser somente um exemplo de como usar a nossa biblioteca para NodeJS.
 
-## Como configurar o robô
+## Rodando
+
+### Pré-requisitos
+Você precisa ter o NodeJS e o NPM instalados. Para instalá-los, recomendamos usar o [nvm](https://github.com/nvm-sh/nvm) no Linux/MacOS ou o [nvm-windows](https://github.com/coreybutler/nvm-windows/releases) no Windows. Recomendamos NodeJS 12 ou superior.
+
+### Baixe o projeto
+
+##### Método 1: Baixe e extraia
+
+Baixe o [arquivo compactado](https://github.com/Biscoint/biscoint-arbitrage-bot/archive/master.zip) deste projeto, e extraia-o em uma pasta à sua escolha.
+
+##### Método 2: Git clone
+
+Se você tem o git instalado, baixe o projeto com o comando abaixo:
+
+`git clone https://github.com/Biscoint/biscoint-arbitrage-bot.git`
+
+### Configure
 
 Para configurar você deve alterar o arquivo `config.js` conforme vamos mostrar abaixo:
 
@@ -37,3 +54,9 @@ Explicando cada ítem de configuração:
 - **minProfitPercent** - aqui é o mínimo que a arbitragem deve fornecer de lucro para que o robô a execute
 
 Deixando tudo como está, apenas substituindo sua chave e seu secret o robô tentará fazer toda arbitragem que der acima de 0.01 % de lucro, tentando aumentar seu saldo em reais e sempre começando com uma oferta de compra de 0.015 BTC.
+
+### Rode
+
+No terminal (ou prompt de comando, se estiver no Windows), vá até pasta raiz do projeto, e então execute o comando abaixo para iniciar o robô:
+
+`npm start`
