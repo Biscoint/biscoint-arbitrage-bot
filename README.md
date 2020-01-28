@@ -2,15 +2,17 @@
 
 Implementação de referência usando a biblioteca do Biscoint para NodeJS.
 
+_Não utilize esse código em produção para valores significativos!!_
+
 ## Como isso funciona?
 
-O Biscoint conecta você a várias corretoras. É normal que durante movimentos naturais do mercado o preço em uma corretora seja mais barato do que em outro, assim acontecendo arbitragem.
+O Biscoint conecta você a várias corretoras. É normal que durante movimentos naturais do mercado o preço de compra em uma corretora seja mais barato que o preço de venda em outra, gerando assim uma oportunidade de fazer o que chamamos de arbitragem.
 
-Arbitragem é a ação de comprar mais barato em uma corretora e vender em outra cuja o preço esteja melhor, descontando as taxas essa movimentação deve ter algum lucro.
+Arbitragem é a ação de comprar mais barato em uma corretora e vender mais caro outra. Descontando as taxas essa movimentação deve resultar em lucro para o operador.
 
-Tendo em vista a facilidade em se conectar a várias corretoras e junto com a API de negociações do Biscoint escrevemos esse pequeno código para exemplificar como funcionaria o uso de nosso wrapper para NodeJS junto com um algorítimo simples e **somente para testes** de arbitragem.
+Tendo em vista a facilidade em se conectar a várias corretoras e utilizando a API de negociações do Biscoint, escrevemos esse pequeno código para exemplificar o uso de nosso wrapper para NodeJS junto com um algorítmo simples e **somente para testes** de arbitragem.
 
-É importante ressaltar que este código não deve ser usado com valores altos devido ser somente um exemplo de como usar a nossa biblioteca para NodeJS.
+É importante ressaltar que este código não deve ser usado com valores altos, já que se trata meramente de um exemplo de como usar a biblioteca para NodeJS do Biscoint.
 
 ## Rodando
 
