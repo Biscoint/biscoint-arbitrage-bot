@@ -150,13 +150,9 @@ function handleMessage(message, level = 'info', throwError = false) {
 }
 
 async function start() {
-  handleMessage('initing');
   init();
-  handleMessage('checking balances');
   await checkBalances();
-  handleMessage('checking interval');
   await checkInterval();
-  handleMessage('start trading');
   await startTrading();
 }
 
