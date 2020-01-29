@@ -17,7 +17,8 @@ Tendo em vista a facilidade em se conectar a várias corretoras e utilizando a A
 ## Rodando
 
 ### Pré-requisitos
-Você precisa ter o NodeJS e o NPM instalados. Para instalá-los, recomendamos usar o [nvm](https://github.com/nvm-sh/nvm) no Linux/MacOS ou o [nvm-windows](https://github.com/coreybutler/nvm-windows/releases) no Windows. Recomendamos NodeJS 12 ou superior.
+* Você precisa ter o NodeJS e o NPM instalados. Para instalá-los, recomendamos usar o [nvm](https://github.com/nvm-sh/nvm) no Linux/MacOS ou o [nvm-windows](https://github.com/coreybutler/nvm-windows/releases) no Windows. Recomendamos NodeJS 12 ou superior.
+* Será necessária uma conta verificada no [Biscoint](https://biscoint.io) para gerar as chaves de API.
 
 ### Baixe o projeto
 
@@ -30,6 +31,12 @@ Baixe o [arquivo compactado](https://github.com/Biscoint/biscoint-arbitrage-bot/
 Se você tem o git instalado, baixe o projeto com o comando abaixo:
 
 `git clone https://github.com/Biscoint/biscoint-arbitrage-bot.git`
+
+### Gere as chaves de API
+
+Acesse a [interface para geração de chaves do Biscoint](https://biscoint.io/dashboard/API). Caso o menu "API" não apareça, solicite ao [suporte](https://biscoint.io/support) que ative a geração de chaves para sua conta.
+
+Anote em um editor de texto a chave e o segredo exibidos, eles não serão exibidos novamente. Você os informará no arquivo de configuração descrito no próximo passo.
 
 ### Configure
 
