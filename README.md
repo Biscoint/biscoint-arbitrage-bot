@@ -59,6 +59,12 @@ Deixando tudo como está, apenas substituindo sua chave e seu secret o robô ten
 
 ### Rode
 
-No terminal (ou prompt de comando, se estiver no Windows), vá até pasta raiz do projeto, e então execute o comando abaixo para iniciar o robô:
+No terminal (ou prompt de comando, se estiver no Windows), vá até pasta raiz do projeto.
+
+Antes de executar pela primeira vez, e sempre que atualizar o projeto, execute:
+
+`npm install`
+
+Para executar o robô, execute o comando abaixo:
 
 `npm start`
