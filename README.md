@@ -40,20 +40,22 @@ Não feche o popup com a chave e o segredo, eles não serão exibidos novamente.
 
 ### Configure
 
-Para configurar você deve alterar o arquivo `config.js` conforme vamos mostrar abaixo:
+Informe suas configurações num arquivo `config.json` localizado na raiz do projeto. Use como modelo o arquivo `config.template.json` (você pode criar 
+uma cópia dele e renomear para `config.json`):
 
-```JavaScript
-export default {
-  apiKey: "qw8e4q6",
-  apiSecret: "d8fg9d",
-  amount: 0.015,
-  profitCurrency: "BRL",
-  initialBuy: true,
-  minProfitPercent: 0.01
-};
+```JSON
+{
+  "apiKey": "paste-your-api-key",
+  "apiSecret": "paste-your-api-key",
+  "amount": 100,
+  "amountCurrency": "BRL",
+  "initialBuy": true,
+  "minProfitPercent": 0.02,
+  "intervalSeconds": null
+}
 ```
 
-Explicando cada ítem de configuração:
+Explicando cada item da configuração:
 
 - **apiKey** - obrigatório - informe sua chave de api gerada no Biscoint.
 - **apiSecret** - obrigatório - informe sua chave secreta gerada no Biscoint.

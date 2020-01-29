@@ -1,6 +1,10 @@
-export default {
-  apiKey: "paste-your-api-key",
-  apiSecret: "paste-your-api-key",
+import fs from 'fs';
+import _ from 'lodash';
+
+
+const config = {
+  apiKey: null,
+  apiSecret: null,
   amount: 100,
   amountCurrency: 'BRL',
   initialBuy: true,
@@ -8,3 +12,13 @@ export default {
   // specify null to let the bot calculate the minimum allowed interval
   intervalSeconds: null,
 };
+
+try {
+  _.merge(config, JSON.parse(fs.readFileSync(
+    `./config.json`,
+  )));
+} catch (err) {
+  console.log('[INFO] Could not read config.json file.', err);
+}
+
+export default config;
