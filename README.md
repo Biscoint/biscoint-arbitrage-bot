@@ -1,6 +1,6 @@
 # biscoint-arbitrage-bot
 
-Implementação de referência usando a biblioteca do Biscoint para NodeJS.
+Implementação de referência que exemplifica o uso da biblioteca do Biscoint para NodeJS, [biscoint-api-node](https://github.com/Biscoint/biscoint-api-node), para verificar a existência de oportunidades de arbitragem e executá-las.
 
 _**Não utilize esse código em produção para valores significativos!!**_
 
