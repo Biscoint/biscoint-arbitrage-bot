@@ -1,8 +1,10 @@
 export default {
-  apiKey: "your_api_key",
-  apiSecret: "your_api_secret",
-  amount: 0.0015,
-  profitCurrency: "BRL",
+  apiKey: "paste-your-api-key",
+  apiSecret: "paste-your-api-key",
+  amount: 100,
+  amountCurrency: 'BRL',
   initialBuy: true,
-  minProfitPercent: 0.01
+  minProfitPercent: 0.02,
+  // specify null to let the bot calculate the minimum allowed interval
+  intervalSeconds: null,
 };

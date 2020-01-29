@@ -4,7 +4,7 @@ Implementação de referência que exemplifica o uso da biblioteca do Biscoint p
 
 _**Não utilize esse código em produção para valores significativos!!**_
 
-## Como isso funciona?
+## Como funciona?
 
 O Biscoint conecta você a várias corretoras. É normal que durante movimentos naturais do mercado o preço de compra em uma corretora seja mais barato que o preço de venda em outra, gerando assim uma oportunidade de fazer o que chamamos de arbitragem.
 
@@ -55,14 +55,27 @@ export default {
 
 Explicando cada ítem de configuração:
 
-- **apiKey** - aqui você deve preencher com sua chave de api gerada no Biscoint.
-- **apiSecret** - aqui você deve preencher com sua chave secreta gerada no Biscoint.
-- **amount** - aqui você deverá colocar o valor que quer arbitrar, como padrão você irá arbitrar 0.015 BTC para ganhar reais.
-- **profitCurrency** - por padrão aqui será BRL, ou seja, você irá arbitrar para aumentar seu saldo em reais.
-- **initialBuy** - no exemplo o robô sempre começa comprando por causa que aqui está definido como "true".
-- **minProfitPercent** - aqui é o mínimo que a arbitragem deve fornecer de lucro para que o robô a execute.
+- **apiKey** - obrigatório - informe sua chave de api gerada no Biscoint.
+- **apiSecret** - obrigatório - informe sua chave secreta gerada no Biscoint.
+- **amount** - opcional - informe o valor das operações individuais de compra e venda, na moeda especificada no parâmetro `amountCurrency`.
+ Por exemplo, se quer que as operações sejam de 100 reais, especifique `amount: 100` e `amountCurrency: 'BRL'`.
+ Valor padrão: 100.
+- **amountCurrency** - opcional - informe a moeda, `'BRL'` ou `'BTC'`, em que está especificada a quantidade (parâmetro `amount`).
+Observe que o seu eventual lucro de arbitragem será acumulado na moeda oposta, ou seja, se especificar `'BRL'`, seu lucro
+será acumulado em BTC, e se especificar `'BTC'`, seu lucro será acumulado em BRL.
+Valor padrão: `'BRL'`. 
+- **initialBuy** - opcional - informe `true` para que o robô execute primeiro compra e depois venda, `false` para que execute
+primeiro venda depois compra. Se o seu saldo inicial está em reais, use `true`, se está em BTC, use `false`.
+Valor padrão: `true`.
+- **minProfitPercent** - informe o lucro mínimo potencial, em percentual, para que o robô tente executar a arbitragem.
+Por exemplo, informe `0.01` para que o robô execute arbitragem sempre que o lucro potencial seja igual ou maior a 0,01%.
+Valor padrão: `0.02`.
+- **intervalSeconds** - opcional - o intervalo, em segundos, entre verificações de oportunidade de arbitragem.
+Informe `null` para que o robô calcule o menor intervalo permitido pela API.
+Valor padrão: `null`. 
 
-Deixando tudo como está, apenas substituindo sua chave e seu secret o robô tentará fazer toda arbitragem que der acima de 0.01 % de lucro, tentando aumentar seu saldo em reais e sempre começando com uma oferta de compra de 0.015 BTC.
+Deixando tudo como está, apenas substituindo sua chave e seu secret, o robô tentará executar toda arbitragem que resultar
+em lucro maior que 0,02%, tentando aumentar seu saldo em bitcoins e sempre começando com uma oferta de compra de R$100,00.
 
 ### Rode
 
