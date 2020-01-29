@@ -11,6 +11,7 @@ const config = {
   minProfitPercent: 0.02,
   // specify null to let the bot calculate the minimum allowed interval
   intervalSeconds: null,
+  playSound: false,
 };
 
 try {

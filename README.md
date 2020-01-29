@@ -75,6 +75,8 @@ Valor padrão: `0.02`.
 - **intervalSeconds** - opcional - o intervalo, em segundos, entre verificações de oportunidade de arbitragem.
 Informe `null` para que o robô calcule o menor intervalo permitido pela API.
 Valor padrão: `null`. 
+- **playSound** - opcional - informe `true` para que o robô toque um som sempre que uma arbitragem for executada.
+No Ubuntu, é necessário que o mplayer seja instalado com `sudo apt install mplayer`. Valor padrão: `false`.
 
 Deixando tudo como está, apenas substituindo sua chave e seu secret, o robô tentará executar toda arbitragem que resultar
 em lucro maior que 0,02%, tentando aumentar seu saldo em bitcoins e sempre começando com uma oferta de compra de R$100,00.

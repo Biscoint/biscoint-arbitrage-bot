@@ -1,17 +1,12 @@
 import Biscoint from 'biscoint-api-node';
 import _ from 'lodash';
+import player from 'play-sound';
 import config from './config.js';
 
 // read the configurations
 let {
-  apiKey, apiSecret, amount, amountCurrency, initialBuy, minProfitPercent, intervalSeconds,
-} = _.merge({
-  amount: 0.01,
-  amountCurrency: 'BRL',
-  initialBuy: true,
-  minProfitPercent: 0.01,
-  intervalSeconds: null,
-}, config);
+  apiKey, apiSecret, amount, amountCurrency, initialBuy, minProfitPercent, intervalSeconds, playSound,
+} = config;
 
 let bc, lastTrade = 0, isQuote;
 
@@ -115,6 +110,7 @@ async function tradeCycle() {
         lastTrade = Date.now();
 
         handleMessage(`Success, profit: + ${profit.toFixed(3)}%`);
+        play();
       } catch (error) {
         handleMessage('Error on confirm offer', 'error');
         console.error(error);
@@ -148,6 +144,16 @@ function handleMessage(message, level = 'info', throwError = false) {
     throw new Error(message);
   }
 }
+
+const sound = playSound && player();
+
+const play = () => {
+  if (playSound) {
+    sound.play('./tone.mp3', (err) => {
+      if (err) console.log(`Could not play sound: ${err}`);
+    });
+  }
+};
 
 async function start() {
   init();

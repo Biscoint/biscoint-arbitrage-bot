@@ -9,7 +9,8 @@
     "biscoint-api-node": "^1.1.0",
     "esm": "^3.2.25",
     "fs": "0.0.1-security",
-    "lodash": "^4.17.15"
+    "lodash": "^4.17.15",
+    "play-sound": "^1.1.3"
   },
   "scripts": {
     "start": "node -r esm index.js"
