@@ -12,19 +12,19 @@ let bc, lastTrade = 0, isQuote;
 
 const init = () => {
   if (!apiKey) {
-    handleMessage('You must specify "apiKey" in config.js', 'error', true);
+    handleMessage('You must specify "apiKey" in config.json', 'error', true);
   }
   if (!apiSecret) {
-    handleMessage('You must specify "apiSecret" in config.js', 'error', true);
+    handleMessage('You must specify "apiSecret" in config.json', 'error', true);
   }
 
   amountCurrency = _.toUpper(amountCurrency);
   if (!['BRL', 'BTC'].includes(amountCurrency)) {
-    handleMessage('"amountCurrency" must be either "BRL" or "BTC". Check your config.js file.', 'error', true);
+    handleMessage('"amountCurrency" must be either "BRL" or "BTC". Check your config.json file.', 'error', true);
   }
 
   if (isNaN(amount)) {
-    handleMessage(`Invalid amount "${amount}. Please specify a valid amount in config.js`, 'error', true);
+    handleMessage(`Invalid amount "${amount}. Please specify a valid amount in config.json`, 'error', true);
   }
 
   isQuote = amountCurrency === 'BRL';
