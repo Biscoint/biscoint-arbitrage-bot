@@ -53,7 +53,7 @@ const checkBalances = async () => {
 
 const checkInterval = async () => {
   const { endpoints } = await bc.meta();
-  const { windowMs, maxRequests } = endpoints.offer.get.rateLimit;
+  const { windowMs, maxRequests } = endpoints.offer.post.rateLimit;
   handleMessage(`Offer Rate limits: ${maxRequests} request per ${windowMs}ms.`);
   let minInterval = 2 * windowMs / maxRequests / 1000;
 
