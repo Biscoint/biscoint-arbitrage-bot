@@ -5,7 +5,7 @@ import config from './config.js';
 
 // read the configurations
 let {
-  apiKey, apiSecret, amount, amountCurrency, initialBuy, minProfitPercent, intervalSeconds, playSound,
+  apiKey, apiSecret, amount, amountCurrency, initialBuy, minProfitPercent, intervalSeconds, playSound, simulation,
 } = config;
 
 let bc, lastTrade = 0, isQuote;
@@ -41,10 +41,10 @@ const checkBalances = async () => {
   handleMessage(`Balances:  BRL: ${BRL} - BTC: ${BTC} `);
 
   const nAmount = Number(amount);
-  let amountBalance = initialBuy ? BRL : BTC;
+  let amountBalance = isQuote ? BRL : BTC;
   if (nAmount > Number(amountBalance)) {
     handleMessage(
-      `Amount ${amount} is greater than the user's ${initialBuy ? 'BRL' : 'BTC'} balance of ${amountBalance}`,
+      `Amount ${amount} is greater than the user's ${isQuote ? 'BRL' : 'BTC'} balance of ${amountBalance}`,
       'error',
       true,
     );
@@ -73,8 +73,6 @@ async function tradeCycle() {
       op: 'buy',
     });
 
-    await sleep(200);
-
     const sellOffer = await bc.offer({
       amount,
       isQuote,
@@ -97,15 +95,17 @@ async function tradeCycle() {
           secondOffer = buyOffer;
         }
 
-        await bc.confirmOffer({
-          offerId: firstOffer.offerId,
-        });
+        if (simulation) {
+          handleMessage('Would execute arbitrage if simulation mode was not enabled');
+        } else {
+          await bc.confirmOffer({
+            offerId: firstOffer.offerId,
+          });
 
-        await sleep(500);
-
-        await bc.confirmOffer({
-          offerId: secondOffer.offerId,
-        });
+          await bc.confirmOffer({
+            offerId: secondOffer.offerId,
+          });
+        }
 
         lastTrade = Date.now();
 
@@ -135,7 +135,7 @@ async function sleep(ms) {
 }
 
 function percent(value1, value2) {
-  return Number(value2) / Number(value1) - 1;
+  return (Number(value2) / Number(value1) - 1) * 100;
 }
 
 function handleMessage(message, level = 'info', throwError = false) {
