@@ -162,4 +162,4 @@ async function start() {
   await startTrading();
 }
 
-start();
+start().catch(e => handleMessage(e, 'error'));
