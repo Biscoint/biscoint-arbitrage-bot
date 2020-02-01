@@ -6,5 +6,6 @@
   "initialBuy": true,
   "minProfitPercent": 0.02,
   "intervalSeconds": null,
-  "playSound": false
+  "playSound": false,
+  "simulation": false
 }
