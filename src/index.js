@@ -8,8 +8,10 @@ let {
   apiKey, apiSecret, amount, amountCurrency, initialBuy, minProfitPercent, intervalSeconds, playSound, simulation,
 } = config;
 
-let bc, lastTrade = 0, isQuote;
+// global variables
+let bc, lastTrade = 0, isQuote, balances;
 
+// Initializes the Biscoint API connector object.
 const init = () => {
   if (!apiKey) {
     handleMessage('You must specify "apiKey" in config.json', 'error', true);
@@ -35,8 +37,10 @@ const init = () => {
   });
 };
 
+// Checks that the balance necessary for the first operation is sufficient for the configured 'amount'.
 const checkBalances = async () => {
-  const { BRL, BTC } = await bc.balance();
+  balances = await bc.balance();
+  const { BRL, BTC } = balances;
 
   handleMessage(`Balances:  BRL: ${BRL} - BTC: ${BTC} `);
 
@@ -51,6 +55,7 @@ const checkBalances = async () => {
   }
 };
 
+// Checks that the configured interval is within the allowed rate limit.
 const checkInterval = async () => {
   const { endpoints } = await bc.meta();
   const { windowMs, maxRequests } = endpoints.offer.post.rateLimit;
@@ -65,6 +70,7 @@ const checkInterval = async () => {
   }
 };
 
+// Executes an arbitrage cycle
 async function tradeCycle() {
   try {
     const buyOffer = await bc.offer({
@@ -84,9 +90,8 @@ async function tradeCycle() {
     if (
       profit >= minProfitPercent
     ) {
+      let firstOffer, secondOffer, firstLeg, secondLeg;
       try {
-        let firstOffer, secondOffer;
-
         if (initialBuy) {
           firstOffer = buyOffer;
           secondOffer = sellOffer;
@@ -98,11 +103,11 @@ async function tradeCycle() {
         if (simulation) {
           handleMessage('Would execute arbitrage if simulation mode was not enabled');
         } else {
-          await bc.confirmOffer({
+          firstLeg = await bc.confirmOffer({
             offerId: firstOffer.offerId,
           });
 
-          await bc.confirmOffer({
+          secondLeg = await bc.confirmOffer({
             offerId: secondOffer.offerId,
           });
         }
@@ -114,6 +119,35 @@ async function tradeCycle() {
       } catch (error) {
         handleMessage('Error on confirm offer', 'error');
         console.error(error);
+
+        if (firstLeg && !secondLeg) {
+          // probably only one leg of the arbitrage got executed, we have to accept loss and rebalance funds.
+          try {
+            // first we ensure the leg was not actually executed
+            let secondOp = initialBuy ? 'sell' : 'buy';
+            const trades = await bc.trades({ op: secondOp });
+            if (_.find(trades, t => t.offerId === secondOffer.offerId)) {
+              handleMessage('The second leg was executed despite of the error. Good!');
+              return;
+            } else {
+              handleMessage(
+                'Only the first leg of the arbitrage was executed. Trying to execute it at a possible loss.');
+            }
+            secondLeg = await bc.offer({
+              amount,
+              isQuote,
+              op: secondOp,
+            });
+            await bc.confirmOffer({
+              offerId: secondLeg.offerId,
+            });
+            handleMessage('The second leg was executed and the balance was normalized');
+          } catch (error) {
+            handleMessage('Fatal error. Unable to recover from incomplete arbitrage. Exiting.', 'fatal');
+            await sleep(500);
+            process.exit(1);
+          }
+        }
       }
     }
   } catch (error) {
@@ -122,6 +156,7 @@ async function tradeCycle() {
   }
 }
 
+// Starts trading, scheduling trades to happen every 'intervalSeconds' seconds.
 const startTrading = async () => {
   handleMessage('Starting trades');
   await tradeCycle();
@@ -155,6 +190,7 @@ const play = () => {
   }
 };
 
+// performs initialization, checks and starts the trading cycles.
 async function start() {
   init();
   await checkBalances();
