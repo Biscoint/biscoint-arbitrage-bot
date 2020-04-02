@@ -214,7 +214,7 @@ function percent(value1, value2) {
 }
 
 function handleMessage(message, level = 'info', throwError = false) {
-  console.log(`[${new Date().toISOString()}] [Biscoint BOT] [${level}] - ${message}`);
+  console.log(`${new Date().toISOString()} [Biscoint BOT] [${level}] - ${message}`);
   if (throwError) {
     throw new Error(message);
   }
