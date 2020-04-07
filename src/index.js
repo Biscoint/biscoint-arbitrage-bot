@@ -60,7 +60,7 @@ const checkInterval = async () => {
   const { endpoints } = await bc.meta();
   const { windowMs, maxRequests } = endpoints.offer.post.rateLimit;
   handleMessage(`Offer Rate limits: ${maxRequests} request per ${windowMs}ms.`);
-  let minInterval = 2 * windowMs / maxRequests / 1000;
+  let minInterval = 2.0 * parseFloat(windowMs) / parseFloat(maxRequests) / 1000.0;
 
   if (!intervalSeconds) {
     intervalSeconds = minInterval;
@@ -70,14 +70,33 @@ const checkInterval = async () => {
   }
 };
 
+let tradeCycleCount = 0;
+
 // Executes an arbitrage cycle
 async function tradeCycle() {
+  let startedAt = 0;
+  let finishedAt = 0;
+
+  tradeCycleCount += 1;
+  const tradeCycleStartedAt = Date.now();
+
+  handleMessage(`[${tradeCycleCount}] Trade cycle started...`);
+
   try {
+
+    startedAt = Date.now();
+
     const buyOffer = await bc.offer({
       amount,
       isQuote,
       op: 'buy',
     });
+
+    finishedAt = Date.now();
+
+    handleMessage(`[${tradeCycleCount}] Got buy offer: ${buyOffer.efPrice} (${finishedAt - startedAt} ms)`);
+
+    startedAt = Date.now();
 
     const sellOffer = await bc.offer({
       amount,
@@ -85,8 +104,12 @@ async function tradeCycle() {
       op: 'sell',
     });
 
+    finishedAt = Date.now();
+
+    handleMessage(`[${tradeCycleCount}] Got sell offer: ${sellOffer.efPrice} (${finishedAt - startedAt} ms)`);
+
     const profit = percent(buyOffer.efPrice, sellOffer.efPrice);
-    handleMessage(`Calculated profit: ${profit.toFixed(3)}%`);
+    handleMessage(`[${tradeCycleCount}] Calculated profit: ${profit.toFixed(3)}%`);
     if (
       profit >= minProfitPercent
     ) {
@@ -100,8 +123,10 @@ async function tradeCycle() {
           secondOffer = buyOffer;
         }
 
+        startedAt = Date.now();
+
         if (simulation) {
-          handleMessage('Would execute arbitrage if simulation mode was not enabled');
+          handleMessage(`[${tradeCycleCount}] Would execute arbitrage if simulation mode was not enabled`);
         } else {
           firstLeg = await bc.confirmOffer({
             offerId: firstOffer.offerId,
@@ -112,12 +137,14 @@ async function tradeCycle() {
           });
         }
 
+        finishedAt = Date.now();
+
         lastTrade = Date.now();
 
-        handleMessage(`Success, profit: + ${profit.toFixed(3)}%`);
+        handleMessage(`[${tradeCycleCount}] Success, profit: + ${profit.toFixed(3)}% (${finishedAt - startedAt} ms)`);
         play();
       } catch (error) {
-        handleMessage('Error on confirm offer', 'error');
+        handleMessage(`[${tradeCycleCount}] Error on confirm offer: ${error.error}`, 'error');
         console.error(error);
 
         if (firstLeg && !secondLeg) {
@@ -127,11 +154,13 @@ async function tradeCycle() {
             let secondOp = initialBuy ? 'sell' : 'buy';
             const trades = await bc.trades({ op: secondOp });
             if (_.find(trades, t => t.offerId === secondOffer.offerId)) {
-              handleMessage('The second leg was executed despite of the error. Good!');
+              handleMessage(`[${tradeCycleCount}] The second leg was executed despite of the error. Good!`);
               return;
             } else {
               handleMessage(
-                'Only the first leg of the arbitrage was executed. Trying to execute it at a possible loss.');
+                `[${tradeCycleCount}] Only the first leg of the arbitrage was executed. ` +
+                'Trying to execute it at a possible loss.',
+              );
             }
             secondLeg = await bc.offer({
               amount,
@@ -141,9 +170,11 @@ async function tradeCycle() {
             await bc.confirmOffer({
               offerId: secondLeg.offerId,
             });
-            handleMessage('The second leg was executed and the balance was normalized');
+            handleMessage(`[${tradeCycleCount}] The second leg was executed and the balance was normalized`);
           } catch (error) {
-            handleMessage('Fatal error. Unable to recover from incomplete arbitrage. Exiting.', 'fatal');
+            handleMessage(
+              `[${tradeCycleCount}] Fatal error. Unable to recover from incomplete arbitrage. Exiting.`, 'fatal',
+            );
             await sleep(500);
             process.exit(1);
           }
@@ -151,16 +182,25 @@ async function tradeCycle() {
       }
     }
   } catch (error) {
-    handleMessage('Error on get offer', 'error');
+    handleMessage(`[${tradeCycleCount}] Error on get offer: ${error.error || error.message}`, 'error');
     console.error(error);
   }
+
+  const tradeCycleFinishedAt = Date.now();
+  const tradeCycleElapsedMs = parseFloat(tradeCycleFinishedAt - tradeCycleStartedAt);
+  const shouldWaitMs = Math.max(Math.ceil((intervalSeconds * 1000.0) - tradeCycleElapsedMs), 0);
+
+  // handleMessage(`[${cycleCount}] Cycle took ${tradeCycleElapsedMs} ms`);
+
+  // handleMessage(`[${cycleCount}] New cycle in ${shouldWaitMs} ms...`);
+
+  setTimeout(tradeCycle, shouldWaitMs);
 }
 
 // Starts trading, scheduling trades to happen every 'intervalSeconds' seconds.
 const startTrading = async () => {
   handleMessage('Starting trades');
-  await tradeCycle();
-  setInterval(tradeCycle, intervalSeconds * 1000);
+  tradeCycle();
 };
 
 // -- UTILITY FUNCTIONS --
@@ -174,7 +214,7 @@ function percent(value1, value2) {
 }
 
 function handleMessage(message, level = 'info', throwError = false) {
-  console.log(`[Biscoint BOT] [${level}] - ${message}`);
+  console.log(`${new Date().toISOString()} [Biscoint BOT] [${level}] - ${message}`);
   if (throwError) {
     throw new Error(message);
   }
