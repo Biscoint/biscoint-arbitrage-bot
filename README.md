@@ -79,6 +79,8 @@ Valor padrão: `null`.
 No Ubuntu, é necessário que o mplayer seja instalado com `sudo apt install mplayer`. Valor padrão: `false`.
 - **simulation** - opcional - informe `true` para rodar em modo simulação, em que as operações de compra e venda não são de fato executadas.
 Valor padrão: `false`.
+- **executeMissedSecondLeg** - opcional - informe `true` para que o robô tente executar a segunda perna da arbitragem
+mesmo com prejuízo, quando ocorrer da primeira perna ser executada e a segunda falhar. Valor padrão: `true`.
 
 Deixando tudo como está, apenas substituindo sua chave e seu secret, o robô tentará executar toda arbitragem que resultar
 em lucro maior que 0,02%, tentando aumentar seu saldo em bitcoins e sempre começando com uma oferta de compra de R$100,00.
