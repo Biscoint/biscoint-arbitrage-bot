@@ -7,5 +7,6 @@
   "minProfitPercent": 0.02,
   "intervalSeconds": null,
   "playSound": false,
-  "simulation": false
+  "simulation": false,
+  "executeMissedSecondLeg": true
 }

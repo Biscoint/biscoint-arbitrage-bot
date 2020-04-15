@@ -13,6 +13,7 @@ const config = {
   intervalSeconds: null,
   playSound: false,
   simulation: false,
+  executeMissedSecondLeg: true,
 };
 
 try {

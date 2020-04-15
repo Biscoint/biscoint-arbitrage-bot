@@ -6,6 +6,7 @@ import config from './config.js';
 // read the configurations
 let {
   apiKey, apiSecret, amount, amountCurrency, initialBuy, minProfitPercent, intervalSeconds, playSound, simulation,
+  executeMissedSecondLeg,
 } = config;
 
 // global variables
@@ -155,22 +156,26 @@ async function tradeCycle() {
             const trades = await bc.trades({ op: secondOp });
             if (_.find(trades, t => t.offerId === secondOffer.offerId)) {
               handleMessage(`[${tradeCycleCount}] The second leg was executed despite of the error. Good!`);
-              return;
+            } else if (!executeMissedSecondLeg) {
+              handleMessage(
+                `[${tradeCycleCount}] Only the first leg of the arbitrage was executed, and the ` +
+                'executeMissedSecondLeg is false, so we won\'t execute the second leg.',
+              );
             } else {
               handleMessage(
                 `[${tradeCycleCount}] Only the first leg of the arbitrage was executed. ` +
                 'Trying to execute it at a possible loss.',
               );
+              secondLeg = await bc.offer({
+                amount,
+                isQuote,
+                op: secondOp,
+              });
+              await bc.confirmOffer({
+                offerId: secondLeg.offerId,
+              });
+              handleMessage(`[${tradeCycleCount}] The second leg was executed and the balance was normalized`);
             }
-            secondLeg = await bc.offer({
-              amount,
-              isQuote,
-              op: secondOp,
-            });
-            await bc.confirmOffer({
-              offerId: secondLeg.offerId,
-            });
-            handleMessage(`[${tradeCycleCount}] The second leg was executed and the balance was normalized`);
           } catch (error) {
             handleMessage(
               `[${tradeCycleCount}] Fatal error. Unable to recover from incomplete arbitrage. Exiting.`, 'fatal',
