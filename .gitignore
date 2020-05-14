@@ -106,3 +106,7 @@ dist
 .idea
 
 config.json
+
+# Virtual envs 
+env/
+envnode/

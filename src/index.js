@@ -1,13 +1,18 @@
 import Biscoint from 'biscoint-api-node';
 import _ from 'lodash';
 import player from 'play-sound';
-import config from './config.js';
 
-// read the configurations
-let {
-  apiKey, apiSecret, amount, amountCurrency, initialBuy, minProfitPercent, intervalSeconds, playSound, simulation,
-  executeMissedSecondLeg,
-} = config;
+// Declare variables
+let apiKey = process.env.apiKey
+let apiSecret = process.env.apiSecret
+let amount = process.env.amount || 100
+let amountCurrency = process.env.amountCurrency || "BRL"
+let initialBuy = process.env.initialBuy || true
+let minProfitPercent = process.env.minProfitPercent || 0.02
+let intervalSeconds = process.env.intervalSeconds || 'null'
+let playSound = process.env.playSound || false
+let simulation = process.env.simulation || false
+let executeMissedSecondLeg = process.env.executeMissedSecondLeg || true
 
 // global variables
 let bc, lastTrade = 0, isQuote, balances;
@@ -15,26 +20,26 @@ let bc, lastTrade = 0, isQuote, balances;
 // Initializes the Biscoint API connector object.
 const init = () => {
   if (!apiKey) {
-    handleMessage('You must specify "apiKey" in config.json', 'error', true);
+    handleMessage('You must specify "apiKey" variable', 'error', true);
   }
   if (!apiSecret) {
-    handleMessage('You must specify "apiSecret" in config.json', 'error', true);
+    handleMessage('You must specify "apiSecret" variable', 'error', true);
   }
 
   amountCurrency = _.toUpper(amountCurrency);
   if (!['BRL', 'BTC'].includes(amountCurrency)) {
-    handleMessage('"amountCurrency" must be either "BRL" or "BTC". Check your config.json file.', 'error', true);
+    handleMessage('"amountCurrency" must be either "BRL" or "BTC". Check your defined variable.', 'error', true);
   }
 
   if (isNaN(amount)) {
-    handleMessage(`Invalid amount "${amount}. Please specify a valid amount in config.json`, 'error', true);
+    handleMessage(`Invalid amount "${amount}. Please specify a valid amount in the defined variable`, 'error', true);
   }
 
   isQuote = amountCurrency === 'BRL';
 
   bc = new Biscoint({
-    apiKey: config.apiKey,
-    apiSecret: config.apiSecret
+    apiKey: apiKey,
+    apiSecret: apiSecret
   });
 };
 
