@@ -38,10 +38,10 @@ Explaining each configuration item:
 
 - **apiKey** - here you must fill in your api key generated in Biscoint
 - **apiSecret** - here you must fill in your secret key generated in Biscoint
-- **amount** - here you must enter the amount you want to arbitrate, by default you will arbitrate 0.015 BTC to win reais
+- **amount** - opcional - here you must enter the amount you want to arbitrate, by default you will arbitrate 0.015 BTC to win reais
 - **amountCurrency** - opcional - provide the currency, `'BRL'` or `'BTC'`,  which is defined the parameter `amount`.
-- **initialBuy** - in the example the robot always starts buying because it is set here to "true"
-- **minProfitPercent** - here is the minimum that the arbitrage must provide profit for the robot to execute it
+- **initialBuy** - opcional - in the example the robot always starts buying because it is set here to "true"
+- **minProfitPercent** - opcional - here is the minimum that the arbitrage must provide profit for the robot to execute it
 Example, using  `0.01` so the robot execute arbitrage is equal o greater than 0,01%.
 Default value: `0.02`.
 - **intervalSeconds** - opcional -The interval in seconds between check of opportunities.
