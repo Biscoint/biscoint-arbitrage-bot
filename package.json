@@ -6,9 +6,9 @@
   "author": "Toledo <gustavo@obex.pw>",
   "license": "MIT",
   "dependencies": {
-    "biscoint-api-node": "^1.2.0",
+    "biscoint-api-node": "^1.2.3",
     "esm": "^3.2.25",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.20",
     "play-sound": "^1.1.3"
   },
   "scripts": {
