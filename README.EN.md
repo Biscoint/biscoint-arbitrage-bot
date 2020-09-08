@@ -14,26 +14,54 @@ It is important to note that this code should not be used with high values becau
 
 ## How to configure the robot
 
-To configure you must change the file `config.js` as we will show below:
 
-```JavaScript
-export default {
-  apiKey: "qw8e4q6",
-  apiSecret: "d8fg9d",
-  amount: 0.015,
-  profitCurrency: "BRL",
-  initialBuy: true,
-  minProfitPercent: 0.01
-};
-```
+### Requirements
+
+* You'll need to install [docker](https://docs.docker.com/). To install you can follow the official [documentation](https://docs.docker.com/engine/install/ubuntu/).
+* You must have a verifed account in the [Biscoint](https://biscoint.io/quick-register)  to create the credentials to be able to interacte with the API.
+* Install [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) if don't have it.
+
+### Git clone
+
+Clone the project running the following command:
+
+`git clone https://github.com/Biscoint/biscoint-arbitrage-bot.git`
+
+### Create the access keys
+
+Access the [interface  to obtain the keys of Biscoint](https://biscoint.io/dashboard/API). In case the menu "API" doesn't show, ask to the [support](https://biscoint.io/support) to activate the creation of the keys to your account.
+
+To configure you'll need to provide the values below using  environment variables:
+
 
 Explaining each configuration item:
 
 - **apiKey** - here you must fill in your api key generated in Biscoint
 - **apiSecret** - here you must fill in your secret key generated in Biscoint
-- **amount** - here you must enter the amount you want to arbitrate, by default you will arbitrate 0.015 BTC to win reais
-- **profitCurrency** - by default here will be BRL, that is, you will arbitrate to increase your balance in reais
-- **initialBuy** - in the example the robot always starts buying because it is set here to "true"
-- **minProfitPercent** - here is the minimum that the arbitrage must provide profit for the robot to execute it
+- **amount** - optional - here you must enter the amount you want to arbitrate, by default you will arbitrate 0.015 BTC to win reais
+- **amountCurrency** - optional - provide the currency, `'BRL'` or `'BTC'`,  which is defined the parameter `amount`.
+- **initialBuy** - optional - in the example the robot always starts buying because it is set here to "true"
+- **minProfitPercent** - optional - here is the minimum that the arbitrage must provide profit for the robot to execute it
+Example, using  `0.01` so the robot execute arbitrage is equal o greater than 0,01%.
+Default value: `0.02`.
+- **intervalSeconds** - optional -The interval in seconds between check of opportunities.
+Use `null` to the robot use the less available time allowed by the API.
+Default value: `null`. 
+- **playSound** - optional - Use `true` to  play a sound each time happen an arbitrage.
+Default value: `false`.
+- **simulation** - optional - Use `true` to run as check mode.
+Default value: `false`.
+- **executeMissedSecondLeg** - optional - Use `true` so the robot try again the arbitrage even with loss when the first step run and fail in the second.
+ Default value: `true`.
 
-Leaving everything as it is, just replacing your key and your secret, the robot will try to make any arbitrage that goes above 0.01% profit, trying to increase your balance in brazilian real and always starting with a buy offer of 0.015 BTC.
+You can leave everything as it is and just provide your key and your secret and the robot will try to make any arbitrage that goes above 0.01% profit, trying to increase your balance in brazilian real and always start with a buy offer of 0.015 BTC.
+
+### Running
+
+Inside the the project folder build the image with the command below:
+
+`docker build -t bistcoin:latest .`
+
+Replace the values below with your keys and execute it:
+
+`docker run -itd  -e apiKey=XXXXXX -e apiSecret=XXXXXX bistcoin:latest`

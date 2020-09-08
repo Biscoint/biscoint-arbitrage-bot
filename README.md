@@ -17,18 +17,13 @@ Tendo em vista a facilidade em se conectar a várias corretoras e utilizando a A
 ## Rodando
 
 ### Pré-requisitos
-* Você precisa ter o NodeJS e o NPM instalados. Para instalá-los, recomendamos usar o [nvm](https://github.com/nvm-sh/nvm) no Linux/MacOS ou o [nvm-windows](https://github.com/coreybutler/nvm-windows/releases) no Windows. Recomendamos NodeJS 12 ou superior.
+* Você precisa ter o [docker](https://docs.docker.com/) instalado. Para instalar, recomendamos usar a documentação [oficial](https://docs.docker.com/engine/install/ubuntu/).
 * Será necessária uma conta verificada no [Biscoint](https://biscoint.io/quick-register) para gerar as chaves de API.
+* Instale o [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 
-### Baixe o projeto
+### Git clone
 
-##### Método 1: Baixe e extraia
-
-Baixe o [arquivo compactado](https://github.com/Biscoint/biscoint-arbitrage-bot/archive/master.zip) deste projeto, e extraia-o em uma pasta à sua escolha, usando o descompactador de arquivos de sua preferência.
-
-##### Método 2: Git clone
-
-Se você tem o git instalado, vá até a linha de comando e execute:
+Clone o projeto com comabaixo abaixo:
 
 `git clone https://github.com/Biscoint/biscoint-arbitrage-bot.git`
 
@@ -40,20 +35,7 @@ Não feche o popup com a chave e o segredo, eles não serão exibidos novamente.
 
 ### Configure
 
-Informe suas configurações num arquivo `config.json` localizado na raiz do projeto. Use como modelo o arquivo `config.template.json` (você pode criar 
-uma cópia dele e renomear para `config.json`):
-
-```JSON
-{
-  "apiKey": "paste-your-api-key",
-  "apiSecret": "paste-your-api-key",
-  "amount": 100,
-  "amountCurrency": "BRL",
-  "initialBuy": true,
-  "minProfitPercent": 0.02,
-  "intervalSeconds": null
-}
-```
+Informe suas configurações passando como variaveis de ambiente.
 
 Explicando cada item da configuração:
 
@@ -76,7 +58,6 @@ Valor padrão: `0.02`.
 Informe `null` para que o robô calcule o menor intervalo permitido pela API.
 Valor padrão: `null`. 
 - **playSound** - opcional - informe `true` para que o robô toque um som sempre que uma arbitragem for executada.
-No Ubuntu, é necessário que o mplayer seja instalado com `sudo apt install mplayer`. Valor padrão: `false`.
 - **simulation** - opcional - informe `true` para rodar em modo simulação, em que as operações de compra e venda não são de fato executadas.
 Valor padrão: `false`.
 - **executeMissedSecondLeg** - opcional - informe `true` para que o robô tente executar a segunda perna da arbitragem
@@ -87,12 +68,10 @@ em lucro maior que 0,02%, tentando aumentar seu saldo em bitcoins e sempre come�
 
 ### Rode
 
-No terminal (ou prompt de comando, se estiver no Windows), vá até pasta raiz do projeto.
+Dentro da pasta raiz do projeto `builde` a imagem com o comando abaixo:
 
-Antes de executar pela primeira vez, e sempre que atualizar o projeto, execute:
+`docker build -t bistcoin:latest .`
 
-`npm install`
+No terminal (ou prompt de comando, se estiver no Windows), substitua os valores abaixo com suas respectivas credenciais e execute:
 
-Para executar o robô, execute o comando abaixo:
-
-`npm start`
+`docker run -itd  -e apiKey=XXXXXX -e apiSecret=XXXXXX bistcoin:latest`
