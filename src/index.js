@@ -10,7 +10,7 @@ let {
 } = config;
 
 // global variables
-let bc, lastTrade = 0, isQuote, balances;
+let bc, lastTrade = 0, isQuote, balances, base;
 
 // Initializes the Biscoint API connector object.
 const init = () => {
@@ -22,8 +22,8 @@ const init = () => {
   }
 
   amountCurrency = _.toUpper(amountCurrency);
-  if (!['BRL', 'BTC'].includes(amountCurrency)) {
-    handleMessage('"amountCurrency" must be either "BRL" or "BTC". Check your config.json file.', 'error', true);
+  if (!['BRL', 'BTC', 'ETH'].includes(amountCurrency)) {
+    handleMessage('"amountCurrency" must be either "BRL", "BTC" or "ETH". Check your config.json file.', 'error', true);
   }
 
   if (isNaN(amount)) {
@@ -31,6 +31,7 @@ const init = () => {
   }
 
   isQuote = amountCurrency === 'BRL';
+  base = isQuote ? 'BTC': amountCurrency,
 
   bc = new Biscoint({
     apiKey: config.apiKey,
@@ -41,15 +42,15 @@ const init = () => {
 // Checks that the balance necessary for the first operation is sufficient for the configured 'amount'.
 const checkBalances = async () => {
   balances = await bc.balance();
-  const { BRL, BTC } = balances;
+  const { BRL, BTC, ETH } = balances;
 
-  handleMessage(`Balances:  BRL: ${BRL} - BTC: ${BTC} `);
+  handleMessage(`Balances:  BRL: ${BRL} - BTC: ${BTC} - ETH: ${ETH}`);
 
   const nAmount = Number(amount);
-  let amountBalance = isQuote ? BRL : BTC;
+  let amountBalance = balances[amountCurrency];
   if (nAmount > Number(amountBalance)) {
     handleMessage(
-      `Amount ${amount} is greater than the user's ${isQuote ? 'BRL' : 'BTC'} balance of ${amountBalance}`,
+      `Amount ${amount} is greater than the user's ${amountCurrency} balance of ${amountBalance}`,
       'error',
       true,
     );
@@ -89,6 +90,7 @@ async function tradeCycle() {
 
     const buyOffer = await bc.offer({
       amount,
+      base,
       isQuote,
       op: 'buy',
     });
@@ -101,6 +103,7 @@ async function tradeCycle() {
 
     const sellOffer = await bc.offer({
       amount,
+      base,
       isQuote,
       op: 'sell',
     });
@@ -168,6 +171,7 @@ async function tradeCycle() {
               );
               secondLeg = await bc.offer({
                 amount,
+                base,
                 isQuote,
                 op: secondOp,
               });
