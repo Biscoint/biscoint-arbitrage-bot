@@ -6,7 +6,7 @@ import config from './config.js';
 // read the configurations
 let {
   apiKey, apiSecret, amount, amountCurrency, initialBuy, minProfitPercent, intervalSeconds, playSound, simulation,
-  executeMissedSecondLeg,
+  executeMissedSecondLeg, apiUrl = undefined,
 } = config;
 
 // global variables
@@ -17,6 +17,7 @@ const init = () => {
   if (!apiKey) {
     handleMessage('You must specify "apiKey" in config.json', 'error', true);
   }
+  handleMessage(`API key: "${_.truncate(apiKey, { length: 8, omission: '...'})}"`);
   if (!apiSecret) {
     handleMessage('You must specify "apiSecret" in config.json', 'error', true);
   }
@@ -34,8 +35,9 @@ const init = () => {
   base = isQuote ? 'BTC': amountCurrency,
 
   bc = new Biscoint({
-    apiKey: config.apiKey,
-    apiSecret: config.apiSecret
+    apiKey,
+    apiSecret,
+    apiUrl,
   });
 };
 
@@ -48,7 +50,7 @@ const checkBalances = async () => {
 
   const nAmount = Number(amount);
   let amountBalance = balances[amountCurrency];
-  if (nAmount > Number(amountBalance)) {
+  if (nAmount > Number(amountBalance || 0)) {
     handleMessage(
       `Amount ${amount} is greater than the user's ${amountCurrency} balance of ${amountBalance}`,
       'error',

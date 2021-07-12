@@ -43,8 +43,8 @@
   "resolved" "https://registry.npmjs.org/bignumber.js/-/bignumber.js-9.0.1.tgz"
   "version" "9.0.1"
 
-"biscoint-api-node@git+ssh://git@github.com/Biscoint/biscoint-api-node.git#v1.2.5-RC.3":
-  "resolved" "git+ssh://git@github.com/Biscoint/biscoint-api-node.git#e2c39fe1ffb42e6d5eb3e968142e0cbe370609af"
+"biscoint-api-node@git+ssh://git@github.com/Biscoint/biscoint-api-node.git#v1.2.5-RC.4":
+  "resolved" "git+ssh://git@github.com/Biscoint/biscoint-api-node.git#60df62ac4433a381af7025f3f734ab82a3638034"
   "version" "1.2.5"
   dependencies:
     "axios" "^0.21.1"
