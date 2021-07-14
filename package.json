@@ -6,7 +6,7 @@
   "author": "Toledo <gustavo@obex.pw>",
   "license": "MIT",
   "dependencies": {
-    "biscoint-api-node": "^1.2.4",
+    "biscoint-api-node": "git+ssh://git@github.com/Biscoint/biscoint-api-node.git#v1.2.5-RC.4",
     "esm": "^3.2.25",
     "lodash": "^4.17.21",
     "play-sound": "^1.1.3"

@@ -62,8 +62,10 @@ Explicando cada item da configuração:
 - **amount** - opcional - informe o valor das operações individuais de compra e venda, na moeda especificada no parâmetro `amountCurrency`.
  Por exemplo, se quer que as operações sejam de 100 reais, especifique `amount: 100` e `amountCurrency: 'BRL'`.
  Valor padrão: 100.
-- **amountCurrency** - opcional - informe a moeda, `'BRL'` ou `'BTC'`, em que está especificada a quantidade (parâmetro `amount`).
-Observe que o seu eventual lucro de arbitragem será acumulado na moeda oposta, ou seja, se especificar `'BRL'`, seu lucro
+- **amountCurrency** - opcional - informe a moeda, `'BRL'`, `'BTC'` ou `'ETH'`, em que está especificada a quantidade (parâmetro `amount`).
+A moeda fiat padrão é `'BRL'`, e a criptomoeda padrão é `'BTC'`, por exemplo, se especificar `'BRL'` a arbitragem será realizada no par `BRL/BTC`,
+e caso especifique `'ETH'`, a arbitragem será realizada no par `BRL/ETH`.
+O seu eventual lucro (ou prejuízo) de arbitragem será acumulado na moeda oposta, ou seja, se especificar `'BRL'`, seu lucro
 será acumulado em BTC, e se especificar `'BTC'`, seu lucro será acumulado em BRL.
 Valor padrão: `'BRL'`. 
 - **initialBuy** - opcional - informe `true` para que o robô execute primeiro compra e depois venda, `false` para que execute
@@ -71,7 +73,7 @@ primeiro venda depois compra. Se o seu saldo inicial está em reais, use `true`,
 Valor padrão: `true`.
 - **minProfitPercent** - informe o lucro mínimo potencial, em percentual, para que o robô tente executar a arbitragem.
 Por exemplo, informe `0.01` para que o robô execute arbitragem sempre que o lucro potencial seja igual ou maior a 0,01%.
-Valor padrão: `0.02`.
+Valor padrão: `0.02` (0.02%).
 - **intervalSeconds** - opcional - o intervalo, em segundos, entre verificações de oportunidade de arbitragem.
 Informe `null` para que o robô calcule o menor intervalo permitido pela API.
 Valor padrão: `null`. 
